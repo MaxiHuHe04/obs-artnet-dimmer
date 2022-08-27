@@ -1,0 +1,17 @@
+{
+  "name": "obs-artnet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dmxnet": "^0.8.0",
+    "obs-websocket-js": "^5.0.1"
+  }
+}
