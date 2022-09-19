@@ -7,6 +7,7 @@ const receiver = artNet.newReceiver({universe: config.UNIVERSE, net: config.NET,
 
 const obs = new OBSWebSocket();
 let tBarInvert = false;
+let tBarLastPosition = 0;
 
 async function createOpacityFilterIfMissing() {
     const {filters} = await obs.call("GetSourceFilterList", {sourceName: config.OBS_SOURCE_NAME});
@@ -51,8 +52,12 @@ receiver.on('data', data => {
 
     if (config.TRANSITION_ENABLED && data.length >= config.CHANNEL + 2) {
         let transitionPosition = data[config.CHANNEL + 1] / 255;
-        if (tBarInvert) transitionPosition = 1 - transitionPosition;
-        if (transitionPosition >= 1) tBarInvert = !tBarInvert;
-        obs.call('SetTBarPosition', {position: transitionPosition}).then();
+        if (tBarLastPosition !== transitionPosition) {
+            tBarLastPosition = transitionPosition;
+
+            if (tBarInvert) transitionPosition = 1 - transitionPosition;
+            if (transitionPosition >= 1) tBarInvert = !tBarInvert;
+            obs.call('SetTBarPosition', {position: transitionPosition}).then();
+        }
     }
 });
