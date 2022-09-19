@@ -9,5 +9,6 @@ export const config = {
     OBS_PASSWORD: null,
     OBS_SOURCE_NAME: 'Black Overlay',
     OPACITY_FILTER_NAME: 'Opacity',
-    BRIGHTNESS_POWER: 1
+    BRIGHTNESS_POWER: 1,
+    TRANSITION_ENABLED: false
 }

@@ -6,6 +6,7 @@ const artNet = new dmxnet({sName: config.SHORT_NAME, lName: config.LONG_NAME})
 const receiver = artNet.newReceiver({universe: config.UNIVERSE, net: config.NET, subnet: config.SUBNET})
 
 const obs = new OBSWebSocket();
+let tBarInvert = false;
 
 async function createOpacityFilterIfMissing() {
     const {filters} = await obs.call("GetSourceFilterList", {sourceName: config.OBS_SOURCE_NAME});
@@ -47,4 +48,11 @@ receiver.on('data', data => {
         filterSettings: {opacity: brightness}
     }).catch(() => createOpacityFilterIfMissing())
         .catch(err => console.warn(err))
+
+    if (config.TRANSITION_ENABLED && data.length >= config.CHANNEL + 2) {
+        let transitionPosition = data[config.CHANNEL + 1] / 255;
+        if (tBarInvert) transitionPosition = 1 - transitionPosition;
+        if (transitionPosition >= 1) tBarInvert = !tBarInvert;
+        obs.call('SetTBarPosition', {position: transitionPosition}).then();
+    }
 });
